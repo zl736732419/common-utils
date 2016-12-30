@@ -12,9 +12,9 @@ import java.io.IOException;
  */
 public class CodeTest {
 	public static void main(String[] args) throws Exception {
-		new CodeTest().createBarCode();
-//        new Application().createQR();
-//        new Application().parseQR();
+//		new CodeTest().createBarCode();
+//        new CodeTest().createQR();
+        new CodeTest().parseQR();
 	}
 	
 	private void parseQR() throws IOException {
@@ -25,13 +25,16 @@ public class CodeTest {
 	private void createQR() throws Exception {
 		String msg = "123456789";
 		String name = "小张";
-		QrCodeUtil.createQR(msg, name);
+		String path = "D://images/zxing.png";
+		QrCodeUtil.createQR(msg, name, path);
 	}
 	
 	private void createBarCode() throws Exception {
 		String msg = "1234567890";
 		String name = "老王";
-		BarCodeUtil.create(msg, name);
+		
+		String path = "D:/images/output.png";
+		BarCodeUtil.create(msg, name, path);
 	}
 	
 }

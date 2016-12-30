@@ -1,6 +1,9 @@
 package com.zheng.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -17,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 二维码生成
+ * 二维码生成器
  *
  * @author zhenglian
  * @data 2016年9月29日 下午5:15:55
@@ -32,9 +35,10 @@ public class QrCodeUtil {
      * @author zhenglian
      * @data 2016年9月29日 下午6:05:24
      */
-    public static void createQR(String msg, String name) throws Exception {
-        String filePath = "D://images/";
-        String fileName = "zxing.png";
+    public static void createQR(String msg, String name, String path) throws Exception {
+        Preconditions.checkNotNull(path, "保存路径不能为空");
+        msg = Strings.nullToEmpty(msg);
+        name = Strings.nullToEmpty(name);
         JSONObject json = new JSONObject();
         json.put("msg", msg);
         json.put("name", name);
@@ -45,12 +49,13 @@ public class QrCodeUtil {
         Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
         BitMatrix bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, height, hints);// 生成矩阵
-        Path path = FileSystems.getDefault().getPath(filePath, fileName);
-        MatrixToImageWriter.writeToPath(bitMatrix, format, path);// 输出图像
+        Path p = FileSystems.getDefault().getPath(path);
+        MatrixToImageWriter.writeToPath(bitMatrix, format, p);// 输出图像
         System.out.println("输出成功.");
     }
 
     public static void parseQR(File file) throws IOException {
+        Preconditions.checkNotNull(file, "文件不能为空");
         BufferedImage image;
         try {
             image = ImageIO.read(file);

@@ -1,5 +1,7 @@
 package com.zheng.utils;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
@@ -30,16 +32,19 @@ import java.net.URI;
  * 条码工具生成器
  */
 public class BarCodeUtil {
-	public static void create(String msg, String name) throws Exception {
+	public static void create(String msg, String name, String path) throws Exception {
+		Preconditions.checkNotNull(path, "保存路径不能为空");
+		msg = Strings.nullToEmpty(msg);
+		name = Strings.nullToEmpty(name);
+		
 		URI uri = Resources.getResource("barcode128.xml").toURI();
 		File file = new File(uri);
 		DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
 		Configuration configuration = builder.buildFromFile(file);
 
 		BarcodeGenerator gen = BarcodeUtil.getInstance().createBarcodeGenerator(configuration);
-
 		// svg(gen, msg);
-		bitmaps(gen, msg, name);
+		bitmaps(gen, msg, name, path);
 		// eps(gen, msg);
 
 	}
@@ -60,8 +65,8 @@ public class BarCodeUtil {
 	 * @param msg
 	 * @throws Exception
 	 */
-	public static void bitmaps(BarcodeGenerator gen, String msg, String name) throws Exception {
-		OutputStream out = new FileOutputStream(new File("D:/images/output.png"));
+	public static void bitmaps(BarcodeGenerator gen, String msg, String name, String path) throws Exception {
+		OutputStream out = new FileOutputStream(new File(path));
 		BitmapCanvasProvider provider = new BitmapCanvasProvider(out, "image/x-png", 300, BufferedImage.TYPE_BYTE_GRAY,
 				true, 0);
 		gen.generateBarcode(provider, msg);
